@@ -1,0 +1,6 @@
+build
+downloads
+Session.vim
+mbs
+*.o
+third_party/src
