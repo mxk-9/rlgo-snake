@@ -1,7 +1,6 @@
 package app
 
 import (
-	// rl "rltest/pkg/raylib"
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
 

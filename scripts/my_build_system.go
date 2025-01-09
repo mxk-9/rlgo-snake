@@ -13,6 +13,11 @@ import (
 var cmd *exec.Cmd = &exec.Cmd{}
 
 func buildProject(prName, target *string) (err error) {
+	binExec := path.Join("build", *prName)
+
+	if *target == "windows" {
+		binExec += ".exe"
+	}
 	if *target != os.Getenv("GOOS") {
 		if err = os.Setenv("GOOS", *target); err != nil {
 			err = fmt.Errorf("Failed to set env variable 'GOOS' to '%s': %v\n", *target, err)
@@ -20,7 +25,22 @@ func buildProject(prName, target *string) (err error) {
 		}
 	}
 
-	cmd = exec.Command("go", "build", "-x", "-o", "./build/", fmt.Sprintf("./cmd/%s/%s.go", *prName, *prName))
+	argsToBuild := []string{
+		"build", "-x", "-o", binExec,
+	}
+
+	if dr, localErr := os.ReadDir(path.Join("cmd", *prName)); localErr == nil {
+		for _, item := range dr {
+			argsToBuild = append(argsToBuild, path.Join("cmd", *prName, item.Name()))
+		}
+	} else {
+		err = fmt.Errorf("Failed to read '%s': %v\n", path.Join("cmd", *prName), err)
+		return
+	}
+
+	log.Printf("Project contains:\n%v", argsToBuild)
+
+	cmd = exec.Command("go", argsToBuild...)
 
 	cmd.Stderr = os.Stderr
 	cmd.Stdout = os.Stdout
@@ -105,8 +125,6 @@ func main() {
 		listProjects bool
 		targetOS     string
 		prebuiltLib  bool
-		clean        bool
-		cleanAll     bool
 		runExe       bool
 		matched      bool = false
 	)
@@ -124,30 +142,8 @@ func main() {
 	flag.BoolVar(&runExe, "run", false, "Launch executable after building")
 	flag.BoolVar(&listProjects, "list", false, "List available projects and exit")
 	flag.BoolVar(&prebuiltLib, "prebuilt-lib", false, "Use only with '-target windows', when enabled, just copying pre-built engine 'raylib.dll' from ./third_party")
-	flag.BoolVar(&clean, "clean", false, "Just removes 'build' folder")
-	flag.BoolVar(&cleanAll, "clean-all", false, "Removes 'build' folder and runs 'make clean' in third_party/src")
 
 	flag.Parse()
-
-	if clean || cleanAll {
-		if _, err := os.Stat("build"); err == nil {
-			if err = os.RemoveAll("build"); err != nil {
-				log.Fatalf("Cannot remove 'build': %v\n", err)
-			}
-		}
-
-		if cleanAll {
-			os.Chdir(path.Join("third_party", "src"))
-			cmd = exec.Command("make", "clean")
-			cmd.Stdout = os.Stdout
-			cmd.Stderr = os.Stderr
-
-			if err = cmd.Run(); err != nil {
-				log.Fatalf("Failed to clean raylib's source directory: %v\n", err)
-			}
-		}
-		os.Exit(0)
-	}
 
 	if targetOS == "" {
 		targetOS = os.Getenv("GOOS")
@@ -166,6 +162,28 @@ func main() {
 			_, isAlreadyBuilt := os.Stat(path.Join("build", "raylib.dll"))
 			if (projectName == "remake" || projectName == "rltest") && targetOS == "windows" && !prebuiltLib && isAlreadyBuilt != nil {
 				log.Println("Building engine from source")
+
+				if _, err = os.Stat(path.Join("third_party", "src")); err != nil {
+					downloaderExec := path.Join("build", "get_raylib_src")
+					if os.Getenv("GOOS") == "windows" {
+						downloaderExec += ".exe"
+					}
+
+					if _, err = os.Stat(downloaderExec); err != nil {
+						log.Println("Cannot find ", downloaderExec, ", please, compile with mbs and then try again:")
+						fmt.Println("mbs -name get_raylib_src")
+						os.Exit(1)
+					}
+
+					cmd = exec.Command(downloaderExec, "-m")
+					cmd.Stderr = os.Stderr
+					cmd.Stdout = os.Stdout
+
+					if err = cmd.Run(); err != nil {
+						log.Fatalln(err)
+					}
+				}
+
 				if err = makeEngineDLL(); err != nil {
 					log.Fatalln(err)
 				}

@@ -56,9 +56,6 @@ $ mbs.exe
 $ mbs.exe -prebuilt-lib
 ```
 
-## MBS:cleanup
-Maybe this option is unnecessary, I dunno
-
 ## MBS:other projects
 `cmd` directory also stores other projects for testing my shitcode, you can
 build them(why not).

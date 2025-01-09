@@ -1,7 +1,6 @@
 package app
 
 import (
-	// rl "rltest/pkg/raylib"
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
 
@@ -25,9 +24,8 @@ func (app *App) RaiseWindow() {
 	rl.InitWindow(int32(app.ScreenWidth), int32(app.ScreenWidth), "Bebra")
 	rl.SetWindowMonitor(0)
 	rl.SetTargetFPS(int32(app.MaxFps))
+	rl.SetWindowState(rl.FlagWindowResizable)
 }
-
-func (app *App) setAppWH() {}
 
 func (app *App) Offset(square int) (offset rl.Vector2) {
 	offset = rl.Vector2{
