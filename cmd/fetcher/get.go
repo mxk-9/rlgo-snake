@@ -8,14 +8,15 @@ import (
 	"path/filepath"
 )
 
-const raylibSrcPath = "https://github.com/raysan5/raylib/archive/refs/tags/5.5.zip"
+const raylibVersion = "5.5"
+const raylibSrcPath = "https://github.com/raysan5/raylib/archive/refs/tags/" + raylibVersion + ".zip"
 
 type Downloader struct {
 	Client *http.Client
 }
 
-func (d *Downloader) GetFile(link, destPath string, overwrite bool) (err error) {
-	if _, err = os.Stat(destPath); err == nil && !overwrite {
+func (d *Downloader) GetFile(link, destPath string) (err error) {
+	if _, err = os.Stat(destPath); err == nil {
 		fmt.Printf("File '%s' exists, skip downloading\n", destPath)
 		err = nil
 		return

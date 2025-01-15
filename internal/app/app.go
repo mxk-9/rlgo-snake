@@ -5,9 +5,9 @@ import (
 )
 
 type App struct {
-	MaxFps       int
-	ScreenWidth  int
-	ScreenHeight int
+	MaxFps       int32
+	ScreenWidth  int32
+	ScreenHeight int32
 }
 
 func AppInit() *App {
@@ -16,6 +16,8 @@ func AppInit() *App {
 		ScreenWidth:  800,
 		ScreenHeight: 800,
 	}
+
+	rl.SetTraceLogLevel(rl.LogInfo)
 
 	return app
 }
@@ -27,7 +29,7 @@ func (app *App) RaiseWindow() {
 	rl.SetWindowState(rl.FlagWindowResizable)
 }
 
-func (app *App) Offset(square int) (offset rl.Vector2) {
+func (app *App) Offset(square int32) (offset rl.Vector2) {
 	offset = rl.Vector2{
 		X: float32(app.ScreenWidth % square),
 		Y: float32(app.ScreenHeight % square),

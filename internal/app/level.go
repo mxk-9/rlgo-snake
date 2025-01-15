@@ -4,11 +4,11 @@ import (
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
 
-type LevelMap struct {
+type Level struct {
 	Borders rl.Rectangle
 }
 
-func (l *LevelMap) SetBorders(x0, y0, sizeW, sizeH float32, offset rl.Vector2) {
+func (l *Level) SetBorders(x0, y0, sizeW, sizeH float32, offset rl.Vector2) {
 	l.Borders = rl.Rectangle{
 		X:      x0 + offset.X,
 		Y:      y0 + offset.Y,
@@ -17,8 +17,8 @@ func (l *LevelMap) SetBorders(x0, y0, sizeW, sizeH float32, offset rl.Vector2) {
 	}
 }
 
-func (l *LevelMap) DrawGrid(scr_w, scr_h, square int, offset rl.Vector2) {
-	for i := 0; i < int(scr_w)/square+1; i++ {
+func (l *Level) DrawGrid(scr_w, scr_h, square int32, offset rl.Vector2) {
+	for i := int32(0); i < scr_w/square+1; i++ {
 		rl.DrawLineV(
 			rl.Vector2{
 				X: float32(square*i) + offset.X/2,
@@ -32,7 +32,7 @@ func (l *LevelMap) DrawGrid(scr_w, scr_h, square int, offset rl.Vector2) {
 		)
 	}
 
-	for i := 0; i < int(scr_h)/square+1; i++ {
+	for i := int32(0); i < scr_h/square+1; i++ {
 		rl.DrawLineV(
 			rl.Vector2{
 				X: offset.X / 2,
@@ -45,10 +45,4 @@ func (l *LevelMap) DrawGrid(scr_w, scr_h, square int, offset rl.Vector2) {
 			rl.LightGray,
 		)
 	}
-}
-
-func (l *LevelMap) CollidePlayerWall(snakeBorders rl.Rectangle) (collide bool) {
-	collide = false
-
-	return
 }

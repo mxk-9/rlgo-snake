@@ -4,5 +4,5 @@ Session.vim
 mbs
 *.o
 third_party/src
-cmd/field
-cmd/checkDir
+releases
+scripts

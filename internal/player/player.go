@@ -1,7 +1,6 @@
 package player
 
 import (
-	// rl "rltest/pkg/raylib"
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
 
@@ -11,7 +10,7 @@ const (
 	Green
 )
 
-const InitSnakeLength int = 7
+const InitSnakeLength int32 = 2
 
 type Snake struct {
 	Color       rl.Color
@@ -19,13 +18,13 @@ type Snake struct {
 	Speed       rl.Vector2
 	Square      float32
 	Size        rl.Vector2
-	Length      int
+	Length      int32
 	Segments    []rl.Vector2
 	SegPos      []rl.Vector2
 	allowMove   bool
 }
 
-func NewSnake(square, maxLength, skin int, offset rl.Vector2) (s *Snake) {
+func NewSnake(square, maxLength, skin int32, offset rl.Vector2) (s *Snake) {
 	s = &Snake{
 		Square:    float32(square),
 		Size:      rl.Vector2{X: float32(square), Y: float32(square)},
@@ -36,14 +35,14 @@ func NewSnake(square, maxLength, skin int, offset rl.Vector2) (s *Snake) {
 		allowMove: true,
 	}
 
-	for i := 0; i < maxLength; i++ {
+	for i := int32(0); i < maxLength; i++ {
 		s.Segments[i] = rl.Vector2{
 			X: offset.X / 2.0,
 			Y: offset.Y / 2.0,
 		}
 	}
 
-	for i := 0; i < s.Length; i++ {
+	for i := int32(0); i < s.Length; i++ {
 		s.SegPos[i] = rl.Vector2Zero()
 	}
 
@@ -52,7 +51,7 @@ func NewSnake(square, maxLength, skin int, offset rl.Vector2) (s *Snake) {
 	return
 }
 
-func (o *Snake) getRect(index int) (rect rl.Rectangle) {
+func (o *Snake) getRect(index int32) (rect rl.Rectangle) {
 	rect = rl.Rectangle{
 		X:      o.Segments[index].X,
 		Y:      o.Segments[index].Y,
@@ -62,7 +61,7 @@ func (o *Snake) getRect(index int) (rect rl.Rectangle) {
 	return
 }
 
-func (o *Snake) setSkin(skin int) {
+func (o *Snake) setSkin(skin int32) {
 	switch skin {
 	case Red:
 		o.Color = rl.Pink
@@ -77,7 +76,7 @@ func (o *Snake) setSkin(skin int) {
 }
 
 func (o *Snake) Draw() {
-	for i := 0; i < o.Length; i++ {
+	for i := int32(0); i < o.Length; i++ {
 		rl.DrawRectangleV(o.Segments[i], o.Size, o.Color)
 		rl.DrawRectangleLinesEx(o.getRect(i), 5, o.ColorBorder)
 	}
@@ -120,26 +119,22 @@ func (o *Snake) Rotate() {
 
 }
 
-func (o *Snake) Move(frame *int, frameTick int) {
+func (o *Snake) Move(frame int32, frameTick int32) int32 {
 	o.Rotate()
 
-	for i := 0; i < o.Length; i++ {
+	for i := int32(0); i < o.Length; i++ {
 		o.SegPos[i] = o.Segments[i]
 	}
 
-	if *frame%frameTick == 0 {
+	if frame%frameTick == 0 {
 		o.allowMove = true
 		o.Segments[0].X += o.Speed.X
 		o.Segments[0].Y += o.Speed.Y
 
-		for i := 1; i < o.Length; i++ {
+		for i := int32(1); i < o.Length; i++ {
 			o.Segments[i] = o.SegPos[i-1]
 		}
 	}
 
-	*frame++
-}
-
-func (o *Snake) Restart() {
-
+	return frame + 1
 }

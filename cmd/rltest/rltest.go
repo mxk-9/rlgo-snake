@@ -1,28 +1,30 @@
 package main
 
 import (
-	"fmt"
-	"rltest/pkg/app"
-	"rltest/pkg/food"
-	"rltest/pkg/game"
-	rl "rltest/pkg/raylib"
-	"rltest/pkg/snake"
+	"rltest/internal/app"
+	"rltest/internal/food"
+	"rltest/internal/player"
+
+	rl "github.com/gen2brain/raylib-go/raylib"
 )
 
-func main() {
-	app := app.AppInit()
-	fmt.Println("Init an app")
-	game := game.InitGame(app)
-	fmt.Println("Init a game")
+var frameCounter int = 0
 
-	player := snake.NewSnake(2, game.SquareSize, game.MaxSnakeLength, game.Offset)
-	fmt.Printf("Init a snake:% 4.0f:% 4.0f\n", player.Segments[0].X, player.Segments[0].Y)
-	fruit := food.NewFood(game.SquareSize, rl.BLUE)
-	fmt.Println("Init a fruit")
+func main() {
+	a := app.AppInit()
+	g := app.NewGame(a)
+
+	g.Offset = a.Offset(g.SquareSize)
+	g.FrameTick = 5
+
+	snk := player.NewSnake(g.SquareSize, g.MaxSnakeLength, player.Red, g.Offset)
+	food := food.NewFood(g.SquareSize, rl.Orange)
+
+	a.RaiseWindow()
 
 	for !rl.WindowShouldClose() {
-		game.UpdateGame(player, fruit)
-		game.DrawGame(player, fruit)
+		g.UpdateGame(snk, food)
+		g.DrawGame(snk, food)
 	}
 
 	rl.CloseWindow()
