@@ -1,0 +1,7 @@
+go 1.23.5
+
+use (
+	.
+	./cmd/my_build_system
+	./cmd/simple_package_manager
+)

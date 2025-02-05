@@ -1,0 +1,7 @@
+{
+	"install_phase" : [
+		{
+            "command" : "pkgman"
+        } 
+	]
+}

@@ -1,22 +1,17 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"io"
 	"log"
 	"os"
 	"os/exec"
 	"path"
+	"strings"
 )
 
-func buildProject(prName, storePath, target *string) (err error) {
-	var (
-		binExec = *prName
-	)
-
-	if *target == "windows" {
-		binExec += ".exe"
-	}
+func buildProject(prName, storePath, target *string) (execName string, err error) {
 	if *target != os.Getenv("GOOS") {
 		if err = os.Setenv("GOOS", *target); err != nil {
 			err = fmt.Errorf("Failed to set env variable 'GOOS' to '%s': %v\n", *target, err)
@@ -24,27 +19,36 @@ func buildProject(prName, storePath, target *string) (err error) {
 		}
 	}
 
-	argsToBuild := []string{
-		"build", "-x", "-o", path.Join(*storePath, binExec),
-	}
-
-	if dr, localErr := os.ReadDir(path.Join("cmd", *prName)); localErr == nil {
-		for _, item := range dr {
-			argsToBuild = append(argsToBuild, path.Join("cmd", *prName, item.Name()))
-		}
-	} else {
-		err = fmt.Errorf("Failed to read '%s': %v\n", path.Join("cmd", *prName), err)
+	if err = os.Chdir(path.Join("cmd", *prName)); err != nil {
 		return
 	}
 
-	log.Printf("Project contains:\n%v", argsToBuild)
-
-	cmd = exec.Command("go", argsToBuild...)
+	cmd := exec.Command(
+		"go", "build", "-x", "-o",
+		path.Join("..", "..", *storePath+string(os.PathSeparator)),
+	)
 
 	cmd.Stderr = os.Stderr
 	cmd.Stdout = os.Stdout
 
 	err = cmd.Run()
+
+	fModule, err := os.Open("go.mod")
+	if err != nil {
+		return
+	}
+	defer fModule.Close()
+
+	buf := bufio.NewScanner(fModule)
+
+	for buf.Scan() {
+		if strings.HasPrefix(buf.Text(), "module") {
+			execName = strings.Split(buf.Text(), " ")[1]
+			break
+		}
+	}
+
+	os.Chdir(path.Join("..", ".."))
 	return
 }
 
@@ -61,7 +65,7 @@ func makeEngineDLL() (err error) {
 
 	log.Printf("\n\nBuilding engine:\n\n")
 	os.Chdir(path.Join("third_party", "src"))
-	cmd = exec.Command(
+	cmd := exec.Command(
 		"make",
 		"CC=x86_64-w64-mingw32-gcc",
 		"PLATFORM=PLATFORM_DESKTOP",

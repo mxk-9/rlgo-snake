@@ -1,15 +1,24 @@
 # Playing with Go and Raylib
 
 ## ToDo:
-+ [ ] Finish working build of snake game
++ [X] Finish working build of snake game
+* [ ] Finish simple package manager:
+  1. [ ] Fetch phase
+  2. [ ] Unpack phase
+  3. [ ] Install phase
 + [ ] Crossplatform:
     - [X] Windows
     - [ ] Android
+- [ ] Add 7z support(for `w64devkit`)
+  ```console
+  go get github.com/bodgit/sevenzip@latest
+  ```
 
 ## Dependencies
-+ `go`
-+ (optional) `mingw` to build engine for Windows
-+ (for linux) [Raylib dependecies](https://github.com/raysan5/raylib/wiki/Working-on-GNU-Linux#dependencies)
+Only Go is nessesary for project. Other dependencies can be installed by
+[spm](#spm)
+
+### Dependencies:spm {#spm}
 
 ## Building from source (development)
 The easiest way is to compile a program for project building and run it after
@@ -17,15 +26,16 @@ editing the game's source code:
 
 ```console
 # Linux
-$ go build -o mbs ./scripts/my_build_system.go
+$ go build -o ./scripts/ ./cmd/my_build_script
+
 # Windows
-$ go build -o mbs.exe .\scripts\my_build_system.go
+$ go build -o .\scripts\ .\cmd\my_build_script
 ```
 
 ## MBS:building
 ### For Linux
 ```console
-$ ./mbs
+$ ./scripts/mbs
 ```
 
 ### For Windows

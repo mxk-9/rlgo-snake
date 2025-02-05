@@ -1,8 +1,13 @@
 build
 downloads
 Session.vim
-mbs
 *.o
 third_party/src
+third_party/spm/lock
+third_party/spm/.installed
 releases
 scripts
+./cmd/fetcher
+./cmd/field
+.emacs.desktop
+.emacs.desktop.lock

@@ -1,0 +1,4 @@
+{
+	"name" : "mingw",
+	"description" : "Compiler for building raylib.dll"
+}

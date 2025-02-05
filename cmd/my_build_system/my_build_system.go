@@ -35,6 +35,7 @@ const defaultProject string = "rltest"
 func main() {
 	var (
 		projectName  string
+		execName     string
 		listProjects bool
 		targetOS     string
 		prebuiltLib  bool
@@ -141,7 +142,7 @@ func main() {
 				}
 			}
 
-			if err = buildProject(&projectName, &storeBinary, &targetOS); err != nil {
+			if execName, err = buildProject(&projectName, &storeBinary, &targetOS); err != nil {
 				log.Fatal(err)
 			}
 			matched = true
@@ -159,11 +160,7 @@ func main() {
 	}
 
 	if runExe {
-		ex := path.Join("build", projectName)
-		if targetOS == "windows" {
-			ex = ex + ".exe"
-		}
-
+		ex := path.Join("build", execName)
 		cmd := exec.Command(ex)
 
 		cmd.Stdout = os.Stdout
