@@ -1,8 +1,10 @@
 # Playing with Go and Raylib
 
+## Quick Start
+
 ## ToDo:
 + [X] Finish working build of snake game
-+ [ ] Crosscompile to windows:
++ [X] Crosscompile to windows:
 ```
 CGO_ENABLED=1 \
   CC=x86_64-w64-mingw32-gcc \
