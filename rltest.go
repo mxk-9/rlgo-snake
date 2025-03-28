@@ -20,7 +20,7 @@ func main() {
 	snk := player.NewSnake(g.SquareSize, g.MaxSnakeLength, player.Red, g.Offset)
 	food := food.NewFood(g.SquareSize, rl.Orange)
 
-	a.RaiseWindow()
+	g.RaiseWindow()
 
 	for !rl.WindowShouldClose() {
 		g.UpdateGame(snk, food)

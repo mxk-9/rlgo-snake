@@ -23,7 +23,7 @@ func AppInit() *App {
 }
 
 func (app *App) RaiseWindow() {
-	rl.InitWindow(int32(app.ScreenWidth), int32(app.ScreenWidth), "Bebra")
+	rl.InitWindow(int32(app.ScreenWidth), int32(app.ScreenWidth), "Snake-Go")
 	rl.SetWindowMonitor(0)
 	rl.SetTargetFPS(int32(app.MaxFps))
 	rl.SetWindowState(rl.FlagWindowResizable)

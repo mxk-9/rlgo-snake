@@ -1,7 +1,0 @@
-alsa-lib
-mesa
-libx11
-libxrandr
-libxi
-libxcursor
-libxinerama
