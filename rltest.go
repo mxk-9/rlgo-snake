@@ -10,6 +10,10 @@ import (
 
 var frameCounter int = 0
 
+func init() {
+	rl.SetCallbackFunc(main)
+}
+
 func main() {
 	a := app.AppInit()
 	g := app.NewGame(a)

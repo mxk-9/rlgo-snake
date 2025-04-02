@@ -1,46 +1,48 @@
 package scene
 
-type Node struct {
-	Child  map[string]*Node
-	Object any
+import rl "github.com/gen2brain/raylib-go/raylib"
+
+type Properties struct {
+}
+
+type Object struct {
+	Ref *any
+	Properties
+}
+
+func NewObject(ref any) {
+
+}
+
+type OType interface {
+	rl.Rectangle | rl.Camera2D
+}
+
+func (o *Object) Get[OType any](OType) OType {
+	return (*o.Ref).(OType)
+}
+
+func (o *Object) GetRectangle() *rl.Rectangle {
+	return (*o.Ref).(*rl.Rectangle)
+}
+
+func (o *Object) GetCamera2D() *rl.Camera2D {
+	return (*o.Ref).(*rl.Camera2D)
 }
 
 type Scene struct {
-	Nodes      *Node
-	UpdateFunc func(s *Scene)
-	DrawFunc   func(s *Scene)
+	GlobalObjectTable map[string]*Object
 }
 
 func NewScene() *Scene {
-	return &Scene{
-		Nodes: &Node{},
-	}
+	s := new(Scene)
+	return s
 }
 
-// func (s *Scene) Update() {
-// 	s.UpdateFunc(s)
-// }
+func (s *Scene) AddObject(nName string, object any) {
 
-// func (s *Scene) Draw() {
-// 	s.DrawFunc(s)
-// }
-
-// Increases level of depth
-func (n *Node) NewNode(nName string, object any) {
-	child := make(map[string]*Node)
-	child[nName] = &Node{}
-	n.Child = child
-	n.Object = object
 }
 
-// Extends node group
-func (n *Node) AddNode(nName string, object any) {
-	if n.Child == nil {
-		n.Child = make(map[string]*Node)
-	}
+func (s *Scene) DelObject(nName string) {
 
-	n.Child[nName] = &Node{
-		Object: object,
-	}
-	return
 }

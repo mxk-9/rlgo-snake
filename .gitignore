@@ -1,12 +1,10 @@
-b
 build
+android/libs
+android/build
 downloads
 Session.vim
 *.o
-third_party/src
-third_party/spm/lock
-third_party/spm/.installed
-releases
+.gradle
 scripts
 .emacs.desktop
 .emacs.desktop.lock

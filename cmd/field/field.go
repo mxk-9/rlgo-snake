@@ -9,12 +9,12 @@ func main() {
 	lvl := level0.Level0()
 
 	for !rl.WindowShouldClose() {
-		lvl.Update()
+		level0.Update(lvl)
 
 		rl.BeginDrawing()
 		rl.ClearBackground(rl.RayWhite)
 
-		lvl.Draw()
+		level0.Draw(lvl)
 
 		rl.DrawText("Bebra", 640, 10, 20, rl.Red)
 		rl.EndDrawing()

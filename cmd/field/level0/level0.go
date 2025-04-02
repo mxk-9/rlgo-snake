@@ -32,12 +32,10 @@ func Level0() (s *scene.Scene) {
 	game.AddNode("player", player)
 	game.AddNode("camera", camera)
 
-	level0.UpdateFunc = level0Update
-	level0.DrawFunc = level0Draw
 	return
 }
 
-func level0Update(s *Scene) {
+func Update(s *scene.Scene) {
 	cam := s.Nodes.Child["game"].Child["camera"].Object.(*rl.Camera2D)
 
 	if rl.IsKeyDown(rl.KeyA) {
@@ -60,7 +58,7 @@ func level0Update(s *Scene) {
 	cam.Zoom += float32(rl.GetMouseWheelMove() * 0.05)
 }
 
-func level0Draw(s *Scene) {
+func Draw(s *scene.Scene) {
 	cam := s.Nodes.Child["game"].Child["camera"].Object.(*rl.Camera2D)
 	plr := s.Nodes.Child["game"].Child["player"].Object.(*rl.Rectangle)
 
