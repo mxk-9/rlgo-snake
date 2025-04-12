@@ -4,7 +4,7 @@ import (
 	"embed"
 	"rltest/internal/app"
 	"rltest/internal/food"
-	// "rltest/pkg/gui"
+	"rltest/pkg/gui"
 	"rltest/internal/player"
 
 	rl "github.com/gen2brain/raylib-go/raylib"
@@ -31,21 +31,21 @@ func main() {
 
 	g.RaiseWindow()
 
-	// butt, err := gui.NewButton(
-	// 	&content, "assets/some_button.png", rl.Vector2{X: 500, Y: 200}, 2,
-	// 	func() {
-	// 		snk.Color = rl.Magenta
-	// 		snk.ColorBorder = rl.Red
-	// 	},
-	// )
-	// if err != nil {
-	// 	return
-	// }
+	butt, err := gui.NewButton(
+		&content, "assets/some_button.png", rl.Vector2{X: 500, Y: 200}, 10,
+		func() {
+			snk.Color = rl.Magenta
+			snk.ColorBorder = rl.Red
+		},
+	)
+	if err != nil {
+		return
+	}
 
 	for !rl.WindowShouldClose() {
 		g.UpdateGame(snk, food)
-		// butt.Press(rl.GetMousePosition(), gui.IsMouseLeftORTapPressed())
-		// butt.Draw()
+		butt.Press(rl.GetMousePosition(), gui.IsMouseLeftORTapPressed())
+		butt.Draw()
 		g.DrawGame(snk, food)
 	}
 
