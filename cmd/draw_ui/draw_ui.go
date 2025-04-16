@@ -30,7 +30,7 @@ func main() {
 		rl.CloseWindow()
 	}
 
-	err = myContainer.SetTexture(&content, "assets/dpad.png", 5)
+	err = myContainer.SetTexture(&content, "assets/dpad.png", 5, 0)
 	if err != nil {
 		rl.SetTraceLogLevel(rl.LogError)
 		rl.TraceLog(rl.LogError, fmt.Sprintf("%v", err))
@@ -41,6 +41,19 @@ func main() {
 	camera := rl.NewCamera2D(rl.Vector2Zero(), rl.Vector2Zero(), 0.0, 1)
 
 	upButton := gui.NewButton(rl.Vector2Zero(), rl.Vector2Zero())
+	upButton.BindFuncOnPress(func() {
+		rl.SetTraceLogLevel(rl.LogInfo)
+		rl.TraceLog(rl.LogInfo, "Up")
+	})
+
+	upButton.BindDrawFuncOnPress(func() {
+		if upButton.DrawIfPressed {
+			myContainer.SetTextureFrame(2)
+		} else {
+			myContainer.SetTextureFrame(1)
+		}
+
+	})
 
 	if err != nil {
 		rl.SetTraceLogLevel(rl.LogError)
@@ -56,7 +69,7 @@ func main() {
 		rl.ClearBackground(rl.RayWhite)
 
 		myContainer.Draw()
-	
+
 		rl.BeginMode2D(camera)
 		rl.EndMode2D()
 		rl.EndDrawing()

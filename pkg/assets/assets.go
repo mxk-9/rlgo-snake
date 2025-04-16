@@ -61,7 +61,6 @@ func LoadImage(contents *embed.FS, fileName string) (img *rl.Image, err error) {
 		if err != nil {
 			return
 		}
-		rl.TraceLog(rl.LogWarning, "File type: "+fType)
 		img = rl.LoadImageFromMemory(fType, fileData, int32(len(fileData)))
 	} else {
 		err = fmt.Errorf("IMAGE: Invalid file data '%s'", fileName)

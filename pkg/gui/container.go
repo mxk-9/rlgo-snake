@@ -1,16 +1,13 @@
 package gui
 
 import (
-	"embed"
-
 	"fmt"
-	"rltest/pkg/assets"
 
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
 
 type Container struct {
-	BaseWidget
+	*BaseWidget
 
 	colStep float32 // scale_x/cols
 	rowStep float32 // scale_y/rows
@@ -29,20 +26,11 @@ func NewConrainer(
 		return
 	}
 
-	// c = &Container{
-	// 	Pos:   pos,
-	// 	scale: scale,
-	// 	size: rl.Vector2{
-	// 		X: pos.X + scale.X,
-	// 		Y: pos.Y + scale.Y,
-	// 	},
-	// 	rows:          rows,
-	// 	cols:          cols,
-	// 	showWidget: true,
-	// }
 	c = &Container{}
-	c.Pos = pos
-	c.Scale = scale
+	c.BaseWidget = NewBaseWidget(pos, scale)
+
+	c.rows = rows
+	c.cols = cols
 
 	c.colStep = c.Scale.X / float32(cols)
 	c.rowStep = c.Scale.Y / float32(rows)
@@ -55,44 +43,20 @@ func NewConrainer(
 	return
 }
 
-func (c *Container) SetTexture(
-	content *embed.FS, imagePath string, frames int32, rotateDegree int32,
-) (err error) {
-	if frames <= 0 {
-		rl.SetTraceLogLevel(rl.LogError)
-		rl.TraceLog(rl.LogError,
-			fmt.Sprintf("Frame count cannot be less than 1! Got: '%d'", frames),
-		)
-		err = fmt.Errorf("FramesLessThanOne")
-		return
-	}
-
-	image, err := assets.LoadImage(content, imagePath)
-	if err != nil {
-		rl.SetTraceLogLevel(rl.LogError)
-		errMsg := fmt.Sprintf("Failed to create button: %v", err)
-		rl.TraceLog(rl.LogError, errMsg)
-	}
-	defer rl.UnloadImage(image)
-
-	c.SpriteFrames = frames
-	rl.ImageResizeNN(image, int32(c.Scale.X), int32(c.Scale.Y)*frames)
-	c.Texture = rl.LoadTextureFromImage(image)
-	c.FrameHeight = float32(c.Texture.Height) / float32(frames)
-	c.DrawRec = rl.NewRectangle(0, 0, float32(c.Texture.Width), c.FrameHeight)
-
-	return
-}
-
 func (c *Container) replaceItemWithConfirm(
 	w Widget, row, col int, replace bool,
 ) (err error) {
 	if row < 0 || col < 0 || row >= c.rows || col >= c.cols {
 		err = PositionOutOfBounds
-		fmt.Printf(
-			"%v:\nMax: %dx%d\nGot: %dx%d\n",
-			err, c.rows-1, c.cols-1, row, col,
+		rl.SetTraceLogLevel(rl.LogWarning)
+		rl.TraceLog(
+			rl.LogWarning,
+			fmt.Sprintf(
+				"%v:\nMax: %dx%d\nGot: %dx%d\n",
+				err, c.rows-1, c.cols-1, row, col,
+			),
 		)
+
 		return
 	}
 
