@@ -16,7 +16,6 @@ func main() {
 		projectName   string
 		projectOutput string
 		projectDir    string
-		createRelease string
 
 		verbose    bool
 		runProgram bool
@@ -30,11 +29,6 @@ func main() {
 
 	flag.StringVar(&target, "t", "", "Target to build")
 	flag.StringVar(&projectName, "p", "", "Build another project in cmd")
-	flag.StringVar(
-		&createRelease,
-		"release", "",
-		"Creates a folder containing all executables for all supported platforms",
-	)
 	flag.BoolVar(&verbose, "v", false, "Printing commands")
 	flag.BoolVar(&runProgram, "r", false, "Launch program after building")
 	flag.BoolVar(&clean, "c", false, "Delete project's output files")
@@ -48,12 +42,6 @@ func main() {
 		// 	path.Join("build"),
 		// 	path.Join("scripts"),
 		// }
-	}
-
-	// TODO:
-	if createRelease != "" {
-		fmt.Println("This feature is not implemented yet")
-		return
 	}
 
 	if verbose {
@@ -71,7 +59,7 @@ func main() {
 	if err != nil && errors.Is(err, UnknownSystem) {
 		fmt.Println(err)
 		fmt.Println("Available systems:")
-		for k := range supportedSystems {
+		for k := range availableTargets {
 			fmt.Printf("\t+ %s\n", k)
 		}
 		os.Exit(1)
@@ -86,7 +74,7 @@ func main() {
 		projectOutput = path.Join("build", "rltest")
 	}
 
-	if currentTarget == Windows {
+	if currentTarget == Windows || currentTarget == WindowsDebug {
 		projectOutput += ".exe"
 	}
 	args = append(args, projectOutput)
@@ -106,6 +94,15 @@ func main() {
 		os.Setenv("GOOS", "windows")
 		os.Setenv("GOARCH", "amd64")
 		ldflags := "-s -w -H=windowsgui"
+		args = append(args, "-ldflags", ldflags, projectDir)
+
+		cmd = exec.Command("go", args...)
+	case WindowsDebug:
+		os.Setenv("CGO_ENABLED", "1")
+		os.Setenv("CC", "x86_64-w64-mingw32-gcc")
+		os.Setenv("GOOS", "windows")
+		os.Setenv("GOARCH", "amd64")
+		ldflags := "-s -w"
 		args = append(args, "-ldflags", ldflags, projectDir)
 
 		cmd = exec.Command("go", args...)

@@ -32,17 +32,19 @@ const (
 	Android TargetSystem = iota
 	Linux
 	Windows
+	WindowsDebug
 )
 
-var supportedSystems map[string]TargetSystem = map[string]TargetSystem{
-	"android": Android,
-	"linux":   Linux,
-	"windows": Windows,
+var availableTargets map[string]TargetSystem = map[string]TargetSystem{
+	"android":       Android,
+	"linux":         Linux,
+	"windows":       Windows,
+	"windows-debug": WindowsDebug,
 }
 
 func getTarget(targetName string) (ts TargetSystem, err error) {
 	ts = -1
-	for k, v := range supportedSystems {
+	for k, v := range availableTargets {
 		if targetName == k {
 			ts = v
 			break
